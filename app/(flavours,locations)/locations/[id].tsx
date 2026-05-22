@@ -1,5 +1,4 @@
-import { Form, HStack, Host, Picker, Text, VStack } from '@expo/ui/swift-ui';
-import { background, font, foregroundStyle, frame, onTapGesture, padding, pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
+import { Column, FieldGroup, Host, Picker, Row, Text } from '@expo/ui';
 import * as Linking from 'expo-linking';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -28,9 +27,9 @@ export default function LocationDetails() {
   if (!location) {
     return (
       <Host style={{ flex: 1 }} colorScheme={colorScheme === 'dark' ? 'dark' : 'light'}>
-        <VStack modifiers={[padding({ top: 16, leading: 16, bottom: 16, trailing: 16 })]}>
+        <Column style={{ padding: 16 }}>
           <Text>Location not found</Text>
-        </VStack>
+        </Column>
       </Host>
     );
   }
@@ -46,51 +45,47 @@ export default function LocationDetails() {
         }}
       />
       <Host style={{ flex: 1 }} colorScheme={colorScheme === 'dark' ? 'dark' : 'light'}>
-        <VStack alignment="leading">
-          <VStack
-            modifiers={[
-              padding({ top: 16, leading: 16, bottom: 16, trailing: 16 }),
-              frame({ maxWidth: windowWidth, alignment: 'leading' }),
-              background(colorScheme === 'dark' ? 'black' : 'white'),
-            ]}
-            alignment="leading"
+        <Column alignment="start">
+          <Column
+            style={{
+              padding: 16,
+              width: windowWidth,
+              backgroundColor: colorScheme === 'dark' ? 'black' : 'white',
+            }}
+            alignment="start"
             spacing={4}>
             {!title ? (
-              <Text modifiers={[font({ size: 26, weight: 'semibold' })]}>{location.name}</Text>
+              <Text textStyle={{ fontSize: 26, fontWeight: '600' }}>{location.name}</Text>
             ) : null}
-            {location.stores.length > 1 ? (
-              <HStack>
+            {location.stores.length > 1 && selectedStoreName != null ? (
+              <Row>
                 <Text>Store: </Text>
                 <Picker
-                  selection={selectedStoreName}
-                  onSelectionChange={(value) => setSelectedStoreName(value as string)}
-                  modifiers={[pickerStyle('menu')]}>
+                  appearance="menu"
+                  selectedValue={selectedStoreName}
+                  onValueChange={(value) => setSelectedStoreName(String(value))}>
                   {location.stores.map((store) => (
-                    <Text key={store.name} modifiers={[tag(store.name)]}>
-                      {store.name}
-                    </Text>
+                    <Picker.Item key={store.name} label={store.name} value={store.name} />
                   ))}
                 </Picker>
-              </HStack>
+              </Row>
             ) : null}
-            <HStack
-              modifiers={[
-                onTapGesture(() =>
-                  Linking.openURL(
-                    `https://maps.apple.com/?ll=${selectedStore?.point[0]},${selectedStore?.point[1]}`
-                  )
-                ),
-              ]}>
-              <Text modifiers={[foregroundStyle('#007AFF')]}>{selectedStore?.address ?? ''}</Text>
-            </HStack>
+            <Row
+              onPress={() =>
+                Linking.openURL(
+                  `https://maps.apple.com/?ll=${selectedStore?.point[0]},${selectedStore?.point[1]}`
+                )
+              }>
+              <Text textStyle={{ color: '#007AFF' }}>{selectedStore?.address ?? ''}</Text>
+            </Row>
             <Text>{selectedStore?.hours ?? ''}</Text>
-          </VStack>
-          <Form>
+          </Column>
+          <FieldGroup style={process.env.EXPO_OS === 'web' ? { width: '100%' } : undefined}>
             {flavours.map((flavour) => (
               <FlavourGroup key={flavour.id} flavour={flavour} />
             ))}
-          </Form>
-        </VStack>
+          </FieldGroup>
+        </Column>
       </Host>
     </>
   );

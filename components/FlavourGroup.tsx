@@ -1,7 +1,13 @@
-import { DisclosureGroup, HStack, Image, Text, VStack } from '@expo/ui/swift-ui';
-import { font, foregroundStyle, listRowInsets } from '@expo/ui/swift-ui/modifiers';
+import { Collapsible, Column, Icon, Row, Text } from '@expo/ui';
 import { useState } from 'react';
 
+import {
+  SEAL_FILLED,
+  SEAL_OUTLINE,
+  SECONDARY_ICON_COLOR,
+  STAR_FILLED,
+  STAR_OUTLINE,
+} from '@/components/icons';
 import { useFavourites } from '@/context/FavouritesContext';
 import { type Flavour } from '@/model';
 
@@ -27,33 +33,30 @@ export default function FlavourGroup({ flavour }: { flavour: Flavour }) {
   const date = formatDateRange(flavour.startDate, flavour.endDate);
 
   return (
-    <DisclosureGroup label={label} isExpanded={isExpanded} onIsExpandedChange={setIsExpanded}>
-      <VStack spacing={6} alignment="leading" modifiers={[listRowInsets({ top: 16, leading: 0, trailing: 16, bottom: 32 })]}>
-        <HStack spacing={8} alignment="center">
-          <Image
-            systemName={isFavourite(flavour.id) ? 'star.fill' : 'star'}
+    <Collapsible label={label} isOpen={isExpanded} onOpenChange={setIsExpanded}>
+      <Column
+        spacing={6}
+        alignment="start"
+        style={{ paddingTop: 16, paddingRight: 16, paddingBottom: 32 }}>
+        <Row spacing={8} alignment="center">
+          <Icon
+            name={isFavourite(flavour.id) ? STAR_FILLED : STAR_OUTLINE}
             size={18}
-            color={isFavourite(flavour.id) ? '#FFD700' : 'secondary'}
+            color={isFavourite(flavour.id) ? '#FFD700' : SECONDARY_ICON_COLOR}
             onPress={() => toggleFavourite(flavour.id)}
           />
-          <Image
-            systemName={isTasted(flavour.id) ? 'checkmark.seal.fill' : 'checkmark.seal'}
+          <Icon
+            name={isTasted(flavour.id) ? SEAL_FILLED : SEAL_OUTLINE}
             size={18}
-            color={isTasted(flavour.id) ? '#007AFF' : 'secondary'}
+            color={isTasted(flavour.id) ? '#007AFF' : SECONDARY_ICON_COLOR}
             onPress={() => toggleTasted(flavour.id)}
           />
-        </HStack>
-        <Text
-          modifiers={[
-            font({ size: 15 }),
-            foregroundStyle({ type: 'color', color: 'secondaryLabel' }),
-          ]}>
-          {date}
-        </Text>
+        </Row>
+        <Text textStyle={{ fontSize: 15, color: 'gray' }}>{date}</Text>
         {flavour.description ? (
-          <Text modifiers={[font({ size: 15 })]}>{flavour.description}</Text>
+          <Text textStyle={{ fontSize: 15 }}>{flavour.description}</Text>
         ) : null}
-      </VStack>
-    </DisclosureGroup>
+      </Column>
+    </Collapsible>
   );
 }

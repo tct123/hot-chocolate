@@ -1,13 +1,24 @@
-import { BottomSheet, Button, Form, Group, Host, HStack, Image, Spacer, Text, VStack } from '@expo/ui/swift-ui';
-import { background, font, foregroundStyle, onTapGesture, padding, presentationBackgroundInteraction, presentationDetents, presentationDragIndicator } from '@expo/ui/swift-ui/modifiers';
+import { BottomSheet, Column, FieldGroup, Host, Icon, Row, Spacer, Text } from '@expo/ui';
 import * as Haptics from 'expo-haptics';
-import { AppleMaps } from 'expo-maps';
 import { useState } from 'react';
 import { ActivityIndicator, Linking, StyleSheet, View } from 'react-native';
 
 import FlavourGroup from '@/components/FlavourGroup';
+import { SECONDARY_ICON_COLOR } from '@/components/icons';
+import StoreMap from '@/components/StoreMap';
 import { useFavourites } from '@/context/FavouritesContext';
 import { type Flavour, FlavourList, LocationList, type Store } from '@/model';
+
+// iOS-only swift-ui escape hatch; tree-shaken on other platforms.
+const BOTTOM_SHEET_MODIFIERS =
+  process.env.EXPO_OS === 'ios'
+    ? [require('@expo/ui/swift-ui/modifiers').presentationBackgroundInteraction('enabled')]
+    : [];
+
+const XMARK_CIRCLE_FILLED = Icon.select({
+  ios: 'xmark.circle.fill',
+  android: require('@expo/material-symbols/cancel.xml'),
+});
 
 function parseTime(timeStr: string): { hours: number; minutes: number } | null {
   const lower = timeStr.toLowerCase().trim();
@@ -35,17 +46,29 @@ function isOpenNow(hoursStr: string): boolean {
 
   const lower = hoursStr.toLowerCase();
   const dayNames = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-  const fullDayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  const fullDayNames = [
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+  ];
   const currentDayName = dayNames[currentDay];
   const currentFullDayName = fullDayNames[currentDay];
 
-  if (lower.includes(`closed ${currentDayName}`) ||
-      lower.includes(`closed ${currentFullDayName}`) ||
-      lower.includes(`closed on ${currentDayName}`)) {
+  if (
+    lower.includes(`closed ${currentDayName}`) ||
+    lower.includes(`closed ${currentFullDayName}`) ||
+    lower.includes(`closed on ${currentDayName}`)
+  ) {
     return false;
   }
 
-  const timeRangeMatch = hoursStr.match(/(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))\s*(?:–|-|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))/i);
+  const timeRangeMatch = hoursStr.match(
+    /(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))\s*(?:–|-|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))/i
+  );
 
   if (timeRangeMatch) {
     const openTime = parseTime(timeRangeMatch[1]);
@@ -110,7 +133,7 @@ export default function Tab() {
         : undefined;
 
     return {
-      id: String(store.locationId),
+      id: `${store.locationId}-${store.name}`,
       coordinates: {
         latitude: store.point[0],
         longitude: store.point[1],
@@ -123,30 +146,14 @@ export default function Tab() {
 
   return (
     <>
-      <AppleMaps.View
-        style={{ flex: 1 }}
+      <StoreMap
         markers={markers}
-        onMarkerClick={(e) => {
+        onMarkerClick={(id) => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           setIsLoading(true);
-          setSelectedStore(STORES.find((store) => String(store.locationId) === e.id));
+          setSelectedStore(STORES.find((store) => `${store.locationId}-${store.name}` === id));
           setTimeout(() => setIsLoading(false), 500);
         }}
-        cameraPosition={{
-          // At proper place to cover most of the stores
-          coordinates: {
-            latitude: 49.2204375,
-            longitude: -123.1236355,
-          },
-          zoom: 10,
-        }}
-        uiSettings={{
-          myLocationButtonEnabled: true,
-          compassEnabled: true,
-          scaleBarEnabled: true,
-          togglePitchEnabled: true,
-        }}
-        properties={{ isMyLocationEnabled: true }}
       />
       {isLoading && (
         <View style={styles.loadingOverlay}>
@@ -156,47 +163,39 @@ export default function Tab() {
       <Host>
         <BottomSheet
           isPresented={!!selectedStore}
-          onIsPresentedChange={(isPresented) => setSelectedStore(isPresented ? selectedStore : null)}>
-          <Group
-            modifiers={[
-              presentationDetents(['medium', 'large']),
-              presentationDragIndicator('visible'),
-              presentationBackgroundInteraction('enabled'),
-            ]}>
-            <VStack alignment="leading" spacing={16}>
-              <HStack modifiers={[padding({ top: 16, trailing: 16 })]}>
-                <Spacer />
-                <Image
-                  systemName="xmark.circle.fill"
-                  color="secondary"
-                  size={28}
-                  onPress={() => setSelectedStore(null)}
-                />
-              </HStack>
-              <VStack
-                alignment="leading"
-                spacing={4}
-                modifiers={[padding({ leading: 16, trailing: 16 })]}>
-                <Text modifiers={[font({ size: 26, weight: 'semibold' })]}>{selectedStore?.locationName ?? ''}</Text>
-                <HStack
-                  modifiers={[
-                    onTapGesture(() =>
-                      Linking.openURL(
-                        `https://maps.apple.com/?ll=${selectedStore?.point[0]},${selectedStore?.point[1]}`
-                      )
-                    ),
-                  ]}>
-                  <Text modifiers={[foregroundStyle('#007AFF')]}>{selectedStore?.address ?? ''}</Text>
-                </HStack>
-                <Text>{selectedStore?.hours ?? ''}</Text>
-              </VStack>
-              <Form>
-                {selectedStore?.locationFlavours.map((flavour) => (
-                  <FlavourGroup key={flavour.id} flavour={flavour} />
-                ))}
-              </Form>
-            </VStack>
-          </Group>
+          onDismiss={() => setSelectedStore(null)}
+          snapPoints={['half', 'full']}
+          modifiers={BOTTOM_SHEET_MODIFIERS}>
+          <Column alignment="start" spacing={16}>
+            <Row>
+              <Spacer />
+              <Icon
+                name={XMARK_CIRCLE_FILLED}
+                color={SECONDARY_ICON_COLOR}
+                size={28}
+                onPress={() => setSelectedStore(null)}
+              />
+            </Row>
+            <Column alignment="start" spacing={4}>
+              <Text textStyle={{ fontSize: 26, fontWeight: '600' }}>
+                {selectedStore?.locationName ?? ''}
+              </Text>
+              <Row
+                onPress={() =>
+                  Linking.openURL(
+                    `https://maps.apple.com/?ll=${selectedStore?.point[0]},${selectedStore?.point[1]}`
+                  )
+                }>
+                <Text textStyle={{ color: '#007AFF' }}>{selectedStore?.address ?? ''}</Text>
+              </Row>
+              <Text>{selectedStore?.hours ?? ''}</Text>
+            </Column>
+            <FieldGroup style={process.env.EXPO_OS === 'web' ? { width: '100%' } : undefined}>
+              {selectedStore?.locationFlavours.map((flavour) => (
+                <FlavourGroup key={flavour.id} flavour={flavour} />
+              ))}
+            </FieldGroup>
+          </Column>
         </BottomSheet>
       </Host>
     </>

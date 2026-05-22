@@ -1,11 +1,20 @@
-import { Button, HStack, Host, Image, List, Spacer, Text, VStack } from '@expo/ui/swift-ui';
-import { buttonStyle, contentShape, font, foregroundStyle, shapes } from '@expo/ui/swift-ui/modifiers';
+import { Host, Icon, List, ListItem, Row, Text } from '@expo/ui';
 import { Stack, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useColorScheme } from 'react-native';
 
+import {
+  SECONDARY_ICON_COLOR,
+  TOOLBAR_FILTER_ACTIVE_ICON,
+  TOOLBAR_FILTER_INACTIVE_ICON,
+} from '@/components/icons';
 import { useFavourites } from '@/context/FavouritesContext';
 import { FlavourList, LocationList } from '@/model';
+
+const CHEVRON = Icon.select({
+  ios: 'chevron.right',
+  android: require('@expo/material-symbols/chevron_right.xml'),
+});
 
 interface Filters {
   showFavouritesOnly: boolean;
@@ -62,17 +71,29 @@ function isOpenNow(hoursStr: string): boolean {
 
   const lower = hoursStr.toLowerCase();
   const dayNames = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-  const fullDayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  const fullDayNames = [
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+  ];
   const currentDayName = dayNames[currentDay];
   const currentFullDayName = fullDayNames[currentDay];
 
-  if (lower.includes(`closed ${currentDayName}`) ||
-      lower.includes(`closed ${currentFullDayName}`) ||
-      lower.includes(`closed on ${currentDayName}`)) {
+  if (
+    lower.includes(`closed ${currentDayName}`) ||
+    lower.includes(`closed ${currentFullDayName}`) ||
+    lower.includes(`closed on ${currentDayName}`)
+  ) {
     return false;
   }
 
-  const timeRangeMatch = hoursStr.match(/(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))\s*(?:–|-|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))/i);
+  const timeRangeMatch = hoursStr.match(
+    /(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))\s*(?:–|-|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))/i
+  );
 
   if (timeRangeMatch) {
     const openTime = parseTime(timeRangeMatch[1]);
@@ -112,8 +133,7 @@ export default function Index() {
       result = result.filter((item) => {
         const location = LocationList.find((l) => l.id === item.location);
         return (
-          item.name.toLowerCase().includes(query) ||
-          location?.name.toLowerCase().includes(query)
+          item.name.toLowerCase().includes(query) || location?.name.toLowerCase().includes(query)
         );
       });
     }
@@ -166,11 +186,8 @@ export default function Index() {
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Menu
           tintColor="#007AFF"
-          icon={
-            activeFilterCount > 0
-              ? 'line.3.horizontal.decrease.circle.fill'
-              : 'line.3.horizontal.decrease.circle'
-          }>
+          separateBackground
+          icon={activeFilterCount > 0 ? TOOLBAR_FILTER_ACTIVE_ICON : TOOLBAR_FILTER_INACTIVE_ICON}>
           <Stack.Toolbar.MenuAction
             isOn={filters.showFavouritesOnly}
             onPress={() => toggleFilter('showFavouritesOnly')}>
@@ -212,9 +229,7 @@ export default function Index() {
             Show Alcohol Free Only
           </Stack.Toolbar.MenuAction>
           {activeFilterCount > 0 && (
-            <Stack.Toolbar.MenuAction
-              destructive
-              onPress={() => setFilters(defaultFilters)}>
+            <Stack.Toolbar.MenuAction destructive onPress={() => setFilters(defaultFilters)}>
               Clear All Filters
             </Stack.Toolbar.MenuAction>
           )}
@@ -223,26 +238,16 @@ export default function Index() {
       <Host style={{ flex: 1 }} colorScheme={colorScheme === 'dark' ? 'dark' : 'light'}>
         <List>
           {filteredFlavours.map((item) => (
-            <Button
+            <ListItem
               key={item.id}
               onPress={() => router.push(`/flavours/${item.id}`)}
-              modifiers={[buttonStyle('plain')]}>
-              <HStack modifiers={[contentShape(shapes.rectangle())]} alignment="center">
-                <VStack alignment="leading" spacing={2}>
-                  <HStack spacing={0}>
-                    <Text modifiers={[foregroundStyle({ type: 'color', color: 'gray' })]}>{`#${item.id}: `}</Text>
-                    <Text>{item.name}</Text>
-                  </HStack>
-                  {item.tags.length > 0 && (
-                    <Text modifiers={[font({ size: 13 }), foregroundStyle({ type: 'color', color: 'gray' })]}>
-                      {item.tags.join(', ')}
-                    </Text>
-                  )}
-                </VStack>
-                <Spacer />
-                <Image systemName="chevron.right" size={14} color="secondary" />
-              </HStack>
-            </Button>
+              supportingText={item.tags.length > 0 ? item.tags.join(', ') : undefined}
+              trailing={<Icon name={CHEVRON} size={14} color={SECONDARY_ICON_COLOR} />}>
+              <Row spacing={0}>
+                <Text textStyle={{ color: 'gray' }}>{`#${item.id}: `}</Text>
+                <Text>{item.name}</Text>
+              </Row>
+            </ListItem>
           ))}
         </List>
       </Host>

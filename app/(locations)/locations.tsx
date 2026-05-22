@@ -1,19 +1,21 @@
-import {
-  Button,
-  HStack,
-  Host,
-  Image,
-  List,
-  Spacer,
-  Text,
-} from '@expo/ui/swift-ui';
-import { buttonStyle, contentShape, font, foregroundStyle, refreshable, shapes } from '@expo/ui/swift-ui/modifiers';
+import { Host, Icon, List, ListItem, Row, Text } from '@expo/ui';
 import * as Location from 'expo-location';
 import { Stack, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useColorScheme } from 'react-native';
 
+import {
+  SECONDARY_ICON_COLOR,
+  TOOLBAR_FILTER_ACTIVE_ICON,
+  TOOLBAR_FILTER_INACTIVE_ICON,
+  TOOLBAR_SORT_ICON,
+} from '@/components/icons';
 import { LocationList } from '@/model';
+
+const CHEVRON = Icon.select({
+  ios: 'chevron.right',
+  android: require('@expo/material-symbols/chevron_right.xml'),
+});
 
 const DEFAULT_LOCATION = {
   latitude: 49.282729,
@@ -50,19 +52,31 @@ function isOpenNow(hoursStr: string): boolean {
 
   // Check if closed today
   const dayNames = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-  const fullDayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  const fullDayNames = [
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+  ];
   const currentDayName = dayNames[currentDay];
   const currentFullDayName = fullDayNames[currentDay];
 
   // Check for explicit closure
-  if (lower.includes(`closed ${currentDayName}`) ||
-      lower.includes(`closed ${currentFullDayName}`) ||
-      lower.includes(`closed on ${currentDayName}`)) {
+  if (
+    lower.includes(`closed ${currentDayName}`) ||
+    lower.includes(`closed ${currentFullDayName}`) ||
+    lower.includes(`closed on ${currentDayName}`)
+  ) {
     return false;
   }
 
   // Try to find time range - look for patterns like "8 a.m. – 6 p.m." or "8am-6pm"
-  const timeRangeMatch = hoursStr.match(/(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))\s*(?:–|-|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))/i);
+  const timeRangeMatch = hoursStr.match(
+    /(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))\s*(?:–|-|to)\s*(\d{1,2}(?::\d{2})?\s*(?:a\.?m\.?|p\.?m\.?))/i
+  );
 
   if (timeRangeMatch) {
     const openTime = parseTime(timeRangeMatch[1]);
@@ -113,18 +127,24 @@ export default function Locations() {
   const [sortBy, setSortBy] = useState<(typeof SORT_OPTIONS)[number]>('Name');
   const [searchText, setSearchText] = useState('');
   const [showOpenOnly, setShowOpenOnly] = useState(false);
-  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number }>(DEFAULT_LOCATION);
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number }>(
+    DEFAULT_LOCATION
+  );
 
   const updateLocation = useCallback(async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      return;
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        return;
+      }
+      const location = await Location.getCurrentPositionAsync({});
+      setUserLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+    } catch (error) {
+      console.warn('Failed to get current location, falling back to default:', error);
     }
-    const location = await Location.getCurrentPositionAsync({});
-    setUserLocation({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-    });
   }, []);
 
   useEffect(() => {
@@ -146,9 +166,7 @@ export default function Locations() {
 
     // Filter by open now
     if (showOpenOnly) {
-      result = result.filter((item) =>
-        item.stores.some((store) => isOpenNow(store.hours))
-      );
+      result = result.filter((item) => item.stores.some((store) => isOpenNow(store.hours)));
     }
 
     // Sort
@@ -185,7 +203,7 @@ export default function Locations() {
         }}
       />
       <Stack.Toolbar placement="right">
-        <Stack.Toolbar.Menu icon="arrow.up.arrow.down.circle" tintColor="#007AFF">
+        <Stack.Toolbar.Menu icon={TOOLBAR_SORT_ICON} tintColor="#007AFF" separateBackground>
           {SORT_OPTIONS.map((option) => (
             <Stack.Toolbar.MenuAction
               key={option}
@@ -197,11 +215,8 @@ export default function Locations() {
         </Stack.Toolbar.Menu>
         <Stack.Toolbar.Menu
           tintColor="#007AFF"
-          icon={
-            showOpenOnly
-              ? 'line.3.horizontal.decrease.circle.fill'
-              : 'line.3.horizontal.decrease.circle'
-          }>
+          separateBackground
+          icon={showOpenOnly ? TOOLBAR_FILTER_ACTIVE_ICON : TOOLBAR_FILTER_INACTIVE_ICON}>
           <Stack.Toolbar.MenuAction
             isOn={showOpenOnly}
             onPress={() => setShowOpenOnly(!showOpenOnly)}>
@@ -210,17 +225,14 @@ export default function Locations() {
         </Stack.Toolbar.Menu>
       </Stack.Toolbar>
       <Host style={{ flex: 1 }} colorScheme={colorScheme === 'dark' ? 'dark' : 'light'}>
-        <List modifiers={[refreshable(updateLocation)]}>
+        <List onRefresh={updateLocation}>
           {filteredAndSortedLocations.map((item) => (
-            <Button
+            <ListItem
               key={item.id}
               onPress={() => router.push(`/locations/${item.id}`)}
-              modifiers={[buttonStyle('plain')]}>
-              <HStack modifiers={[contentShape(shapes.rectangle())]}>
-                <Text>{item.name}</Text>
-                <Spacer />
-                <HStack spacing={8} alignment="center">
-                  <Text modifiers={[font({ size: 14 }), foregroundStyle('#8E8E93')]}>
+              trailing={
+                <Row spacing={8} alignment="center">
+                  <Text textStyle={{ fontSize: 14, color: '#8E8E93' }}>
                     {formatDistance(
                       getDistanceKm(userLocation, {
                         latitude: item.stores[0].point[0],
@@ -228,10 +240,11 @@ export default function Locations() {
                       })
                     )}
                   </Text>
-                  <Image systemName="chevron.right" size={14} color="secondary" />
-                </HStack>
-              </HStack>
-            </Button>
+                  <Icon name={CHEVRON} size={14} color={SECONDARY_ICON_COLOR} />
+                </Row>
+              }>
+              {item.name}
+            </ListItem>
           ))}
         </List>
       </Host>
