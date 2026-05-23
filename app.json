@@ -7,10 +7,9 @@
     "icon": "./assets/images/icon.png",
     "scheme": "hot-chocolate",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.brents.hot-chocolate",
+      "bundleIdentifier": "de.cmg.hot-chocolate",
       "icon": "./assets/app.icon",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
@@ -55,7 +54,10 @@
       "reactCompiler": true
     },
     "extra": {
-      "router": {}
+      "router": {},
+      "eas": {
+        "projectId": "8824ae9f-01b9-4bc7-b448-6c8499dbeb8d"
+      }
     },
     "android": {
       "package": "com.brents.hotchocolate"

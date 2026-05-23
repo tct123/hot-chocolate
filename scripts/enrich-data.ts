@@ -4,7 +4,7 @@
  */
 
 import * as cheerio from 'cheerio';
-import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
 const VENDORS_API = 'https://hotchocolatefest.com/wp-json/wp/v2/vendors';
@@ -124,19 +124,23 @@ async function fetchVendorPage(slug: string): Promise<Map<number, string>> {
     for (let i = 1; i < flavourSections.length; i += 2) {
       const id = parseInt(flavourSections[i], 10);
       if (!flavourDescriptions.has(id) && flavourSections[i + 1]) {
-        let desc = flavourSections[i + 1]
-          .split(/(?:#\d{1,3}|Available:|Location:|$)/)[0]
-          .trim();
+        let desc = flavourSections[i + 1].split(/(?:#\d{1,3}|Available:|Location:|$)/)[0].trim();
 
         // Extract just the name and description part
-        const lines = desc.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        const lines = desc
+          .split('\n')
+          .map((l) => l.trim())
+          .filter((l) => l.length > 0);
         if (lines.length > 0) {
           // First line is the name, rest might be description
-          const descLines = lines.slice(1).filter(l =>
-            l.length > 20 &&
-            !l.match(/^January|^February|^Available/i) &&
-            !l.match(/^\d+\s*(a\.m\.|p\.m\.)/i)
-          );
+          const descLines = lines
+            .slice(1)
+            .filter(
+              (l) =>
+                l.length > 20 &&
+                !l.match(/^January|^February|^Available/i) &&
+                !l.match(/^\d+\s*(a\.m\.|p\.m\.)/i)
+            );
 
           if (descLines.length > 0) {
             const cleanDesc = decodeHtml(descLines.join(' ')).substring(0, 500);
@@ -189,7 +193,10 @@ async function main() {
   // Create lookup maps
   const locationByName = new Map<string, any>();
   for (const loc of locations.data) {
-    const normalizedName = loc.name.toLowerCase().replace(/ – new$/i, '').trim();
+    const normalizedName = loc.name
+      .toLowerCase()
+      .replace(/ – new$/i, '')
+      .trim();
     locationByName.set(normalizedName, loc);
   }
 
@@ -255,7 +262,7 @@ async function main() {
     }
 
     // Rate limiting
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 300));
   }
 
   // Save updated data
