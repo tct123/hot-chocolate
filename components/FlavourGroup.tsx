@@ -7,9 +7,9 @@ import {
   SECONDARY_ICON_COLOR,
   STAR_FILLED,
   STAR_OUTLINE,
-} from '@/components/icons';
-import { useFavourites } from '@/context/FavouritesContext';
-import { type Flavour } from '@/model';
+} from '../components/icons';
+import { useFavourites } from '../context/FavouritesContext';
+import { type Flavour } from '../model';
 
 function formatDateRange(startDate: string, endDate: string): string {
   const start = new Date(startDate);

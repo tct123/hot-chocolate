@@ -3,11 +3,11 @@ import * as Haptics from 'expo-haptics';
 import { useState } from 'react';
 import { ActivityIndicator, Linking, StyleSheet, View } from 'react-native';
 
-import FlavourGroup from '@/components/FlavourGroup';
-import { SECONDARY_ICON_COLOR } from '@/components/icons';
-import StoreMap from '@/components/StoreMap';
-import { useFavourites } from '@/context/FavouritesContext';
-import { type Flavour, FlavourList, LocationList, type Store } from '@/model';
+import FlavourGroup from '../../components/FlavourGroup';
+import { SECONDARY_ICON_COLOR } from '../../components/icons';
+import StoreMap from '../../components/StoreMap';
+import { useFavourites } from '../../context/FavouritesContext';
+import { type Flavour, FlavourList, LocationList, type Store } from '../../model';
 
 // iOS-only swift-ui escape hatch; tree-shaken on other platforms.
 const BOTTOM_SHEET_MODIFIERS =

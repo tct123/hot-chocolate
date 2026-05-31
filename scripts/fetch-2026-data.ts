@@ -3,7 +3,7 @@
  * Run with: npx tsx scripts/fetch-2026-data.ts
  */
 
-import { writeFileSync, readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
 // Types matching the app's data model
@@ -76,8 +76,10 @@ function findCoordinates(vendorName: string, address: string): [number, number] 
   if (vendorStores) {
     // Try to find matching address
     for (const [existingAddr, coords] of vendorStores) {
-      if (normalizedAddress.includes(existingAddr.split(',')[0].toLowerCase()) ||
-          existingAddr.includes(normalizedAddress.split(',')[0].toLowerCase())) {
+      if (
+        normalizedAddress.includes(existingAddr.split(',')[0].toLowerCase()) ||
+        existingAddr.includes(normalizedAddress.split(',')[0].toLowerCase())
+      ) {
         return coords;
       }
     }
@@ -91,8 +93,10 @@ function findCoordinates(vendorName: string, address: string): [number, number] 
   for (const [existingVendor, stores] of existingCoordinates) {
     if (normalizedVendor.includes(existingVendor) || existingVendor.includes(normalizedVendor)) {
       for (const [existingAddr, coords] of stores) {
-        if (normalizedAddress.includes(existingAddr.split(',')[0].toLowerCase()) ||
-            existingAddr.includes(normalizedAddress.split(',')[0].toLowerCase())) {
+        if (
+          normalizedAddress.includes(existingAddr.split(',')[0].toLowerCase()) ||
+          existingAddr.includes(normalizedAddress.split(',')[0].toLowerCase())
+        ) {
           return coords;
         }
       }
@@ -130,7 +134,13 @@ async function fetchVendorDetails(slug: string): Promise<{
   instagram: string;
   website: string;
   stores: { name: string; address: string; hours: string }[];
-  flavours: { name: string; description: string; startDate: string; endDate: string; tags: string[] }[];
+  flavours: {
+    name: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+    tags: string[];
+  }[];
 } | null> {
   try {
     const response = await fetch(`https://hotchocolatefest.com/vendors/${slug}/`);
@@ -139,8 +149,9 @@ async function fetchVendorDetails(slug: string): Promise<{
     const html = await response.text();
 
     // Extract description - look for the main content section
-    const descMatch = html.match(/<div[^>]*class="[^"]*vendor-description[^"]*"[^>]*>([\s\S]*?)<\/div>/i) ||
-                      html.match(/<div[^>]*class="[^"]*elementor-widget-text-editor[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
+    const descMatch =
+      html.match(/<div[^>]*class="[^"]*vendor-description[^"]*"[^>]*>([\s\S]*?)<\/div>/i) ||
+      html.match(/<div[^>]*class="[^"]*elementor-widget-text-editor[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
     const description = descMatch ? decodeHtml(descMatch[1]) : '';
 
     // Extract Instagram handle
@@ -148,23 +159,33 @@ async function fetchVendorDetails(slug: string): Promise<{
     const instagram = instaMatch ? instaMatch[1] : '';
 
     // Extract website
-    const websiteMatch = html.match(/<a[^>]*href="(https?:\/\/(?!instagram|facebook|twitter)[^"]+)"[^>]*>.*?(?:website|visit|official)/i) ||
-                         html.match(/Website:?\s*<a[^>]*href="([^"]+)"/i);
+    const websiteMatch =
+      html.match(
+        /<a[^>]*href="(https?:\/\/(?!instagram|facebook|twitter)[^"]+)"[^>]*>.*?(?:website|visit|official)/i
+      ) || html.match(/Website:?\s*<a[^>]*href="([^"]+)"/i);
     const website = websiteMatch ? websiteMatch[1] : '';
 
     // Extract store locations - look for address patterns
     const stores: { name: string; address: string; hours: string }[] = [];
-    const addressMatches = html.matchAll(/(\d+[^<,]+(?:St\.|Street|Ave\.|Avenue|Way|Blvd|Road|Rd)[^<]*(?:Vancouver|Richmond|Burnaby|North Vancouver|Surrey|New Westminster|Coquitlam|Port Moody|Langley|White Rock|Whistler)[^<]*)/gi);
+    const addressMatches = html.matchAll(
+      /(\d+[^<,]+(?:St\.|Street|Ave\.|Avenue|Way|Blvd|Road|Rd)[^<]*(?:Vancouver|Richmond|Burnaby|North Vancouver|Surrey|New Westminster|Coquitlam|Port Moody|Langley|White Rock|Whistler)[^<]*)/gi
+    );
 
     for (const match of addressMatches) {
       const address = decodeHtml(match[1]);
-      if (!stores.some(s => s.address === address)) {
+      if (!stores.some((s) => s.address === address)) {
         stores.push({ name: '', address, hours: '' });
       }
     }
 
     // Extract flavours
-    const flavours: { name: string; description: string; startDate: string; endDate: string; tags: string[] }[] = [];
+    const flavours: {
+      name: string;
+      description: string;
+      startDate: string;
+      endDate: string;
+      tags: string[];
+    }[] = [];
 
     // Look for flavour sections with numbers like #001
     const flavourMatches = html.matchAll(/#(\d{3})\s*[–-]\s*([^<]+)/gi);
@@ -175,7 +196,7 @@ async function fetchVendorDetails(slug: string): Promise<{
         description: '',
         startDate: '2026-01-17T08:00:00Z',
         endDate: '2026-02-14T08:00:00Z',
-        tags: []
+        tags: [],
       });
     }
 
@@ -218,7 +239,7 @@ async function main() {
             name: store.name || 'Main',
             address: store.address,
             hours: store.hours || 'See website for hours',
-            point: coords
+            point: coords,
           });
         } else {
           console.log(`  No coordinates found for: ${store.address}`);
@@ -226,7 +247,7 @@ async function main() {
             name: store.name || 'Main',
             address: store.address,
             hours: store.hours || 'See website for hours',
-            point: [49.2827, -123.1207] // Default to Vancouver downtown, needs manual update
+            point: [49.2827, -123.1207], // Default to Vancouver downtown, needs manual update
           });
         }
       }
@@ -234,10 +255,11 @@ async function main() {
 
     // If no stores found from page, try to use existing data
     if (stores.length === 0) {
-      const existing = existingLocations.data.find(l =>
-        l.name.toLowerCase() === name.toLowerCase() ||
-        l.name.toLowerCase().includes(name.toLowerCase()) ||
-        name.toLowerCase().includes(l.name.toLowerCase())
+      const existing = existingLocations.data.find(
+        (l) =>
+          l.name.toLowerCase() === name.toLowerCase() ||
+          l.name.toLowerCase().includes(name.toLowerCase()) ||
+          name.toLowerCase().includes(l.name.toLowerCase())
       );
       if (existing) {
         stores.push(...existing.stores);
@@ -250,7 +272,16 @@ async function main() {
       description: details?.description || '',
       instagram: details?.instagram || '',
       website: details?.website || '',
-      stores: stores.length ? stores : [{ name: 'Main', address: 'See website', hours: 'See website', point: [49.2827, -123.1207] }]
+      stores: stores.length
+        ? stores
+        : [
+          {
+            name: 'Main',
+            address: 'See website',
+            hours: 'See website',
+            point: [49.2827, -123.1207],
+          },
+        ],
     });
 
     // Add flavours
@@ -263,24 +294,24 @@ async function main() {
           startDate: flav.startDate,
           endDate: flav.endDate,
           location: locationId,
-          tags: flav.tags
+          tags: flav.tags,
         });
       }
     }
 
     // Rate limiting
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 200));
   }
 
   // Write output files
   const locationOutput = {
     version: '2026.01',
-    data: locations
+    data: locations,
   };
 
   const flavourOutput = {
     version: '2026.01',
-    data: flavours
+    data: flavours,
   };
 
   writeFileSync(

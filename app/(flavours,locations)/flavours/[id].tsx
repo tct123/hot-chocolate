@@ -8,9 +8,9 @@ import {
   SECONDARY_ICON_COLOR,
   STAR_FILLED,
   STAR_OUTLINE,
-} from '@/components/icons';
-import { useFavourites } from '@/context/FavouritesContext';
-import { FlavourList, LocationList } from '@/model';
+} from '../../../components/icons';
+import { useFavourites } from '../../../context/FavouritesContext';
+import { FlavourList, LocationList } from '../../../model';
 
 export default function FlavourDetails() {
   const { id } = useLocalSearchParams();

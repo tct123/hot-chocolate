@@ -7,9 +7,9 @@ import {
   SECONDARY_ICON_COLOR,
   TOOLBAR_FILTER_ACTIVE_ICON,
   TOOLBAR_FILTER_INACTIVE_ICON,
-} from '@/components/icons';
-import { useFavourites } from '@/context/FavouritesContext';
-import { FlavourList, LocationList } from '@/model';
+} from '../../components/icons';
+import { useFavourites } from '../../context/FavouritesContext';
+import { FlavourList, LocationList } from '../../model';
 
 const CHEVRON = Icon.select({
   ios: 'chevron.right',

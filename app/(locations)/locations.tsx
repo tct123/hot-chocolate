@@ -9,8 +9,8 @@ import {
   TOOLBAR_FILTER_ACTIVE_ICON,
   TOOLBAR_FILTER_INACTIVE_ICON,
   TOOLBAR_SORT_ICON,
-} from '@/components/icons';
-import { LocationList } from '@/model';
+} from '../../components/icons';
+import { LocationList } from '../../model';
 
 const CHEVRON = Icon.select({
   ios: 'chevron.right',
@@ -160,13 +160,13 @@ export default function Locations() {
       result = result.filter(
         (item) =>
           item.name.toLowerCase().includes(query) ||
-          item.stores.some((store) => store.address.toLowerCase().includes(query))
+          item.stores.some((store: { address: string; }) => store.address.toLowerCase().includes(query))
       );
     }
 
     // Filter by open now
     if (showOpenOnly) {
-      result = result.filter((item) => item.stores.some((store) => isOpenNow(store.hours)));
+      result = result.filter((item) => item.stores.some((store: { hours: string; }) => isOpenNow(store.hours)));
     }
 
     // Sort

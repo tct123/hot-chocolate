@@ -1,5 +1,5 @@
 import 'expo-sqlite/localStorage/install';
-import '@/styles/tabs.css';
+import '../styles/tabs.css';
 
 import { isLiquidGlassAvailable } from 'expo-glass-effect';
 import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
@@ -7,7 +7,7 @@ import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 
-import { FavouritesProvider } from '@/context/FavouritesContext';
+import { FavouritesProvider } from '../context/FavouritesContext';
 
 const hasLiquidGlass = isLiquidGlassAvailable();
 
