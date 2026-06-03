@@ -31,12 +31,6 @@
         }
       ],
       [
-        "expo-maps",
-        {
-          "requestLocationPermission": true
-        }
-      ],
-      [
         "expo-location",
         {
           "locationWhenInUsePermission": "This app uses your location to show nearby hot chocolate spots on the map."
