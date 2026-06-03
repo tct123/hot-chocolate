@@ -3,6 +3,7 @@ import * as Haptics from 'expo-haptics';
 import { useState } from 'react';
 import { ActivityIndicator, Linking, StyleSheet, View } from 'react-native';
 
+import { presentationBackgroundInteraction } from '@expo/ui/swift-ui/modifiers';
 import FlavourGroup from '../../components/FlavourGroup';
 import { SECONDARY_ICON_COLOR } from '../../components/icons';
 import StoreMap from '../../components/StoreMap';
@@ -12,7 +13,7 @@ import { type Flavour, FlavourList, LocationList, type Store } from '../../model
 // iOS-only swift-ui escape hatch; tree-shaken on other platforms.
 const BOTTOM_SHEET_MODIFIERS =
   process.env.EXPO_OS === 'ios'
-    ? [require('@expo/ui/swift-ui/modifiers').presentationBackgroundInteraction('enabled')]
+    ? [presentationBackgroundInteraction('enabled')]
     : [];
 
 const XMARK_CIRCLE_FILLED = Icon.select({

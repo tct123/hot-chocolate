@@ -2,7 +2,6 @@ import { Host, Icon, List, ListItem, Row, Text } from '@expo/ui';
 import { Stack, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useColorScheme } from 'react-native';
-
 import {
   SECONDARY_ICON_COLOR,
   TOOLBAR_FILTER_ACTIVE_ICON,
