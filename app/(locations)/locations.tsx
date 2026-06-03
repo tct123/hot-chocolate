@@ -131,21 +131,22 @@ export default function Locations() {
     DEFAULT_LOCATION
   );
 
-  const updateLocation = useCallback(async () => {
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        return;
+  const updateLocation = useCallback(
+    async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          return;
+        }
+        const location = await Location.getCurrentPositionAsync({});
+        setUserLocation({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        });
+      } catch (error) {
+        console.warn('Failed to get current location, falling back to default:', error);
       }
-      const location = await Location.getCurrentPositionAsync({});
-      setUserLocation({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      });
-    } catch (error) {
-      console.warn('Failed to get current location, falling back to default:', error);
-    }
-  }, []);
+    }, []);
 
   useEffect(() => {
     updateLocation();

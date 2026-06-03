@@ -1,4 +1,4 @@
-import { Button, Column, FieldGroup, Host, Text } from '@expo/ui';
+import { Button, FieldGroup, Host, Text } from '@expo/ui';
 import * as Linking from 'expo-linking';
 import { Stack } from 'expo-router';
 import { useColorScheme } from 'react-native';
@@ -20,16 +20,7 @@ export default function AboutPage() {
           </FieldGroup.Section>
 
           <FieldGroup.Section title="LINKS">
-            <Button
-              variant="text"
-              onPress={() =>
-                Linking.openURL('https://apps.apple.com/ca/app/yvr-hot-chocolate-fest/id1670251126')
-              }>
-              <Column alignment="start" spacing={2}>
-                <Text textStyle={{ color: '#007AFF' }}>Official App on App Store</Text>
-                <Text textStyle={{ fontSize: 13, color: 'gray' }}>Not updated for 2026</Text>
-              </Column>
-            </Button>
+
             <Button variant="text" onPress={() => Linking.openURL('https://hotchocolatefest.com')}>
               <Text textStyle={{ color: '#007AFF' }}>Hot Chocolate Festival Website</Text>
             </Button>
