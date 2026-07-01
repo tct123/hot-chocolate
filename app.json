@@ -41,7 +41,8 @@
       "expo-image",
       "expo-sqlite",
       "expo-asset",
-      "@bacons/apple-colors"
+      "@bacons/apple-colors",
+      "expo-status-bar"
     ],
     "experiments": {
       "typedRoutes": true,
