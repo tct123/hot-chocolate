@@ -3,14 +3,13 @@ import * as Location from 'expo-location';
 import { Stack, useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useColorScheme } from 'react-native';
-
+import { LocationList } from '../../../model';
 import {
   SECONDARY_ICON_COLOR,
   TOOLBAR_FILTER_ACTIVE_ICON,
   TOOLBAR_FILTER_INACTIVE_ICON,
   TOOLBAR_SORT_ICON,
 } from '../../components/icons';
-import { LocationList } from '../../model';
 
 const CHEVRON = Icon.select({
   ios: 'chevron.right',

@@ -1,6 +1,7 @@
 import { Collapsible, Column, Icon, Row, Text } from '@expo/ui';
 import { useState } from 'react';
 
+import { type Flavour } from '../../model';
 import {
   SEAL_FILLED,
   SEAL_OUTLINE,
@@ -9,7 +10,6 @@ import {
   STAR_OUTLINE,
 } from '../components/icons';
 import { useFavourites } from '../context/FavouritesContext';
-import { type Flavour } from '../model';
 
 function formatDateRange(startDate: string, endDate: string): string {
   const start = new Date(startDate);

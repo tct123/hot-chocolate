@@ -2,13 +2,13 @@ import { Host, Icon, List, ListItem, Row, Text } from '@expo/ui';
 import { Stack, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useColorScheme } from 'react-native';
+import { FlavourList, LocationList } from '../../../model';
 import {
   SECONDARY_ICON_COLOR,
   TOOLBAR_FILTER_ACTIVE_ICON,
   TOOLBAR_FILTER_INACTIVE_ICON,
 } from '../../components/icons';
 import { useFavourites } from '../../context/FavouritesContext';
-import { FlavourList, LocationList } from '../../model';
 
 const CHEVRON = Icon.select({
   ios: 'chevron.right',

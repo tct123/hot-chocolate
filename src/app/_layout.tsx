@@ -4,8 +4,8 @@ import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import 'expo-sqlite/localStorage/install';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
+import '../../styles/tabs.css';
 import { FavouritesProvider } from '../context/FavouritesContext';
-import '../styles/tabs.css';
 
 const hasLiquidGlass = isLiquidGlassAvailable();
 

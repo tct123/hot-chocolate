@@ -3,8 +3,8 @@ import * as Linking from 'expo-linking';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useColorScheme, useWindowDimensions } from 'react-native';
+import { FlavourList, LocationList } from '../../../../model';
 import FlavourGroup from '../../../components/FlavourGroup';
-import { FlavourList, LocationList } from '../../../model';
 
 export default function LocationDetails() {
   const { id, title } = useLocalSearchParams();

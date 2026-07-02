@@ -1,7 +1,7 @@
 import { Button, Column, Host, Icon, Row, Spacer, Text } from '@expo/ui';
 import { Link, Stack, useLocalSearchParams } from 'expo-router';
 import { useColorScheme } from 'react-native';
-
+import { FlavourList, LocationList } from '../../../../model';
 import {
   SEAL_FILLED,
   SEAL_OUTLINE,
@@ -10,7 +10,6 @@ import {
   STAR_OUTLINE,
 } from '../../../components/icons';
 import { useFavourites } from '../../../context/FavouritesContext';
-import { FlavourList, LocationList } from '../../../model';
 
 export default function FlavourDetails() {
   const { id } = useLocalSearchParams();
