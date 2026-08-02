@@ -3,9 +3,6 @@
 # dependencies
 node_modules/
 
-# EAS
-eas.json
-
 # Expo
 .expo/
 dist/
@@ -39,6 +36,8 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-app-example
-android/
-ios/
+example
+
+# generated native folders
+/ios
+/android
