@@ -47,7 +47,7 @@
       [
         "@react-native-tvos/config-tv",
         {
-          "isTV": true
+          "isTV": false
         }
       ]
     ],
