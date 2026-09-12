@@ -21,8 +21,7 @@ export default function RootLayout() {
     <FavouritesProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <NativeTabs
-          backgroundColor={backgroundColor}
-          disableTransparentOnScrollEdge={!hasLiquidGlass}>
+          backgroundColor={backgroundColor}>
           <NativeTabs.Trigger name="(flavours)">
             <NativeTabs.Trigger.Icon sf="cup.and.saucer" md="local_cafe" />
             <NativeTabs.Trigger.Label>Flavours</NativeTabs.Trigger.Label>
