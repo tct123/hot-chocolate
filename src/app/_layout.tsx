@@ -1,6 +1,6 @@
 import { isLiquidGlassAvailable } from 'expo-glass-effect';
 import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
-import { NativeTabs } from 'expo-router/unstable-native-tabs';
+import { NativeTabs } from 'expo-router/native-tabs';
 import 'expo-sqlite/localStorage/install';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
