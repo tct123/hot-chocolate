@@ -3,7 +3,7 @@ import { isLiquidGlassAvailable } from 'expo-glass-effect';
 import { Stack } from 'expo-router';
 
 type StackScreenOptions = React.ComponentProps<typeof Stack>['screenOptions'];
-
+// const theme = useTheme() // remove
 const hasLiquidGlass = isLiquidGlassAvailable();
 
 /**
