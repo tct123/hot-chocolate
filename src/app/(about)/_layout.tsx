@@ -1,5 +1,5 @@
 import { Stack, useTheme } from 'expo-router';
-import { SystemScreenStackPreset } from '../../components/StackPreset';
+import { useSystemScreenStackPreset } from '../../components/StackPreset';
 
 
 export default function RootLayout() {
@@ -7,7 +7,7 @@ export default function RootLayout() {
   return (
     <Stack
       screenOptions={{
-        ...SystemScreenStackPreset,
+        ...useSystemScreenStackPreset,
         headerLargeTitle: false,
         title: 'Hot Chocolate App',
         headerStyle: {
