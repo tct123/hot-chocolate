@@ -14,6 +14,8 @@ export default function RootLayout() {
   const theme = useTheme()
   const colorScheme = useColorScheme();
   const flavours_navbar = i18n.t("flavours_navbar")
+  const location_navbar = i18n.t("locations_navbar")
+  const about_navbar = i18n.t("about_navbar")
 
   return (
     <FavouritesProvider>
@@ -27,11 +29,11 @@ export default function RootLayout() {
           </NativeTabs.Trigger>
           <NativeTabs.Trigger name="(locations)">
             <NativeTabs.Trigger.Icon sf="mappin.and.ellipse" md="location_on" />
-            <NativeTabs.Trigger.Label>Locations</NativeTabs.Trigger.Label>
+            <NativeTabs.Trigger.Label>{location_navbar}</NativeTabs.Trigger.Label>
           </NativeTabs.Trigger>
           <NativeTabs.Trigger name="(about)">
             <NativeTabs.Trigger.Icon sf="info.circle" md="info" />
-            <NativeTabs.Trigger.Label>About</NativeTabs.Trigger.Label>
+            <NativeTabs.Trigger.Label>{about_navbar}</NativeTabs.Trigger.Label>
           </NativeTabs.Trigger>
         </NativeTabs>
         <StatusBar style="auto" />
