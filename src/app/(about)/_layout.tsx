@@ -7,7 +7,7 @@ export default function RootLayout() {
   return (
     <Stack
       screenOptions={{
-        ...useSystemScreenStackPreset,
+        ...useSystemScreenStackPreset(),
         headerLargeTitle: false,
         title: 'Hot Chocolate App',
         headerStyle: {

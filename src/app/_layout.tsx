@@ -12,14 +12,12 @@ const hasLiquidGlass = isLiquidGlassAvailable();
 export default function RootLayout() {
   const theme = useTheme()
   const colorScheme = useColorScheme();
-  const backgroundColor = theme.colors.background
 
   return (
     <FavouritesProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <NativeTabs
           blurEffect='systemDefault'
-          backgroundColor={backgroundColor} //remove
           >
           <NativeTabs.Trigger name="(flavours)">
             <NativeTabs.Trigger.Icon sf="cup.and.saucer" md="local_cafe" />
