@@ -15,22 +15,22 @@ export const SECONDARY_ICON_COLOR: ColorValue =
 
 export const STAR_FILLED = Icon.select({
   ios: 'star.fill',
-  android: 'star',
+  android: import('@expo/material-symbols/star.xml'),
 });
 
 export const STAR_OUTLINE = Icon.select({
   ios: 'star',
-  android: 'star',
+  android: import('@expo/material-symbols/star.xml'),
 });
 
 export const SEAL_FILLED = Icon.select({
   ios: 'checkmark.seal.fill',
-  android: 'verified',
+  android: import('@expo/material-symbols/verified.xml'),
 });
 
 export const SEAL_OUTLINE = Icon.select({
   ios: 'checkmark.seal',
-  android: 'verified',
+  android: import('@expo/material-symbols/verified.xml'),
 });
 
 // Toolbar icons — Stack.Toolbar.Menu's Android renderer requires a synchronous
@@ -40,15 +40,15 @@ export const SEAL_OUTLINE = Icon.select({
 
 export const TOOLBAR_SORT_ICON = Icon.select({
   ios: 'arrow.up.arrow.down.circle',
-  android: 'swap_vert',
+  android: import('@expo/material-symbols/swap_vert.xml'),
 });
 
 export const TOOLBAR_FILTER_ACTIVE_ICON = Icon.select({
   ios: 'line.3.horizontal.decrease.circle.fill',
-  android: 'filter_alt',
+  android: import('@expo/material-symbols/filter_alt.xml'),
 });
 
 export const TOOLBAR_FILTER_INACTIVE_ICON = Icon.select({
   ios: 'line.3.horizontal.decrease.circle',
-  android: 'filter_list',
+  android: import('@expo/material-symbols/filter_list.xml'),
 });

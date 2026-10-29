@@ -13,7 +13,7 @@ import {
 
 const CHEVRON = Icon.select({
   ios: 'chevron.right',
-  android: 'chevron_right',
+  android: import('@expo/material-symbols/chevron_right.xml'),
 });
 
 const DEFAULT_LOCATION = {

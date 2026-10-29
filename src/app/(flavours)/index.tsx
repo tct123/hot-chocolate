@@ -12,7 +12,7 @@ import { useFavourites } from '../../context/FavouritesContext';
 
 const CHEVRON = Icon.select({
   ios: 'chevron.right',
-  android: 'chevron_right',
+  android: import('@expo/material-symbols/chevron_right.xml'),
 });
 
 interface Filters {
