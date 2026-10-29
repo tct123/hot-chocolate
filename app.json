@@ -50,7 +50,14 @@
           "isTV": false
         }
       ],
-      "expo-localization"
+      [
+        "expo-localization",
+        {
+          "supportedLocales": [
+            "en"
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
