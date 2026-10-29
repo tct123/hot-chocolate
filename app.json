@@ -44,6 +44,7 @@
       "@bacons/apple-colors",
       "expo-status-bar",
       "expo-system-ui",
+      "expo-navigation-bar",
       [
         "@react-native-tvos/config-tv",
         {
