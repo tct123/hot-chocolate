@@ -1,5 +1,6 @@
+import { systemGroupedBackground } from '@bacons/apple-colors';
 import { Stack, useTheme } from 'expo-router';
-import { systemGroupedBackground, SystemScreenStackPreset } from '../../components/StackPreset';
+import { SystemScreenStackPreset } from '../../components/StackPreset';
 
 
 export default function RootLayout() {
