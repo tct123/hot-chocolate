@@ -1,5 +1,5 @@
 import { isLiquidGlassAvailable } from 'expo-glass-effect';
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
+import { DarkTheme, DefaultTheme, ThemeProvider, useTheme } from 'expo-router';
 import { NativeTabs } from 'expo-router/native-tabs';
 import 'expo-sqlite/localStorage/install';
 import { StatusBar } from 'expo-status-bar';
@@ -10,19 +10,16 @@ import { FavouritesProvider } from '../context/FavouritesContext';
 const hasLiquidGlass = isLiquidGlassAvailable();
 
 export default function RootLayout() {
+  const theme = useTheme()
   const colorScheme = useColorScheme();
-  const backgroundColor = hasLiquidGlass
-    ? undefined
-    : colorScheme === 'dark'
-      ? '#000000'
-      : '#ffffff';
+  const backgroundColor = theme.colors.background
 
   return (
     <FavouritesProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <NativeTabs
           blurEffect='systemDefault'
-          //backgroundColor={backgroundColor} //remove
+          backgroundColor={backgroundColor} //remove
           >
           <NativeTabs.Trigger name="(flavours)">
             <NativeTabs.Trigger.Icon sf="cup.and.saucer" md="local_cafe" />

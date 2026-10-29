@@ -1,4 +1,3 @@
-import { systemGroupedBackground } from '@bacons/apple-colors';
 import { Stack, useTheme } from 'expo-router';
 import { SystemScreenStackPreset } from '../../components/StackPreset';
 
@@ -12,7 +11,7 @@ export default function RootLayout() {
         headerLargeTitle: false,
         title: 'Hot Chocolate App',
         headerStyle: {
-          backgroundColor: systemGroupedBackground,
+          backgroundColor: theme.colors.background,
         },
       }}
     />
