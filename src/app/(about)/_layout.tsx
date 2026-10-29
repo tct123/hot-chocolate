@@ -1,5 +1,6 @@
 import { Stack, useTheme } from 'expo-router';
-import { SystemScreenStackPreset } from '../../components/StackPreset';
+import { systemGroupedBackground, SystemScreenStackPreset } from '../../components/StackPreset';
+
 
 export default function RootLayout() {
   const theme= useTheme();
@@ -10,7 +11,7 @@ export default function RootLayout() {
         headerLargeTitle: false,
         title: 'Hot Chocolate App',
         headerStyle: {
-          backgroundColor: theme.colors.background // systemGroupedBackground,
+          backgroundColor: systemGroupedBackground,
         },
       }}
     />
