@@ -1,4 +1,5 @@
 import { isLiquidGlassAvailable } from 'expo-glass-effect';
+import { NavigationBar } from "expo-navigation-bar";
 import { DarkTheme, DefaultTheme, ThemeProvider, useTheme } from 'expo-router';
 import { NativeTabs } from 'expo-router/native-tabs';
 import 'expo-sqlite/localStorage/install';
@@ -6,6 +7,8 @@ import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 import '../../styles/tabs.css';
 import { i18n } from '../components/localization';
+import { FavouritesProvider } from '../context/FavouritesContext';
+
 const hasLiquidGlass = isLiquidGlassAvailable();
 
 export default function RootLayout() {
@@ -16,7 +19,7 @@ export default function RootLayout() {
   const about_navbar = i18n.t("about_navbar")
 
   return (
-    //<FavouritesProvider>
+    <FavouritesProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <NativeTabs
           blurEffect='systemDefault'
@@ -36,7 +39,7 @@ export default function RootLayout() {
         </NativeTabs>
         <StatusBar style="auto" />
       </ThemeProvider>
-      //<NavigationBar style='dark' />
-    //</FavouritesProvider>
+      <NavigationBar style='dark' />
+    </FavouritesProvider>
   );
 }
