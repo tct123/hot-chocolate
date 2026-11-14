@@ -39,7 +39,7 @@ export default function RootLayout() {
         </NativeTabs>
         <StatusBar style="auto" />
       </ThemeProvider>
-      <NavigationBar style='dark' />
+      <NavigationBar style="dark" />
     </FavouritesProvider>
   );
 }
