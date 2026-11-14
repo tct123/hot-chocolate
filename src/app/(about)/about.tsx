@@ -18,11 +18,9 @@ export default function AboutPage() {
               creators of this app are not in any way affiliated with the festival.
             </Text>
           </FieldGroup.Section>
-
           <FieldGroup.Section title="LINKS">
-
             <Button variant="text" onPress={() => Linking.openURL('https://hotchocolatefest.com')}>
-              <Text textStyle={{ color: '#007AFF' }}>Hot Chocolate Festival Website</Text>
+              <Text textStyle={{ color: '#007bff' }}>Hot Chocolate Festival Website</Text>
             </Button>
           </FieldGroup.Section>
         </FieldGroup>
